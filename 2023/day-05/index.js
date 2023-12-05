@@ -1,7 +1,6 @@
 import { getInput, formatBoard, getLCM, Stack } from "../utils/index.js";
 
 function part1(input) {
-  // let seeds, maps;
   let [seeds, ...maps] = input.split("\n\n");
   let map = {};
   let index = 0;
@@ -23,13 +22,11 @@ function part1(input) {
       let lookUp = seedNum;
       for (let i = 0; i < index; i++) {
         let ins = map[i];
-        let matchFound = false;
-        for (let j = 0; j < ins.length && !matchFound; j++) {
+        for (let j = 0; j < ins.length; j++) {
           if (
             lookUp >= ins[j].source &&
             lookUp < ins[j].source + ins[j].length
           ) {
-            matchFound = true;
             lookUp = lookUp + (ins[j].destination - ins[j].source);
             break;
           }
@@ -41,7 +38,6 @@ function part1(input) {
 }
 
 function part2(input) {
-  // let seeds, maps;
   let [seedsInitial, ...maps] = input.split("\n\n");
   let seeds = seedsInitial.replace("seeds: ", "").split(" ").map(Number);
 
@@ -57,7 +53,7 @@ function part2(input) {
     index++;
   });
 
-  // do a reverse lookup... this is faster
+  // do a reverse lookup... this is faster, otherwise you're counting atoms in the universe
   for (let lowest = 0; ; lowest++) {
     let lookUp = lowest;
     for (let j = index - 1; j >= 0; j--) {
