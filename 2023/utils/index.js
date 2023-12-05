@@ -89,3 +89,21 @@ export class Stack {
     return this.items.length === 0;
   }
 }
+
+export function msToTime(elapsed) {
+  elapsed = Math.trunc(elapsed);
+  // Pad to 2 or 3 digits, default is 2
+  function pad(n, z) {
+    z = z || 2;
+    return ("00" + n).slice(-z);
+  }
+
+  var ms = elapsed % 1000;
+  elapsed = (elapsed - ms) / 1000;
+  var secs = elapsed % 60;
+  elapsed = (elapsed - secs) / 60;
+  var mins = elapsed % 60;
+  var hrs = (elapsed - mins) / 60;
+
+  return pad(hrs) + ":" + pad(mins) + ":" + pad(secs) + "." + pad(ms, 3);
+}

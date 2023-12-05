@@ -1,4 +1,10 @@
-import { getInput, formatBoard, getLCM, Stack } from "../utils/index.js";
+import {
+  getInput,
+  formatBoard,
+  getLCM,
+  Stack,
+  msToTime,
+} from "../utils/index.js";
 
 function part1(input) {
   let [seeds, ...maps] = input.split("\n\n");
@@ -81,13 +87,19 @@ function part2(input) {
 }
 
 const input = getInput(import.meta.url);
+let start = performance.now();
 const answer1 = part1(input);
+const part1Time = performance.now() - start;
+start = performance.now();
 const answer2 = part2(input);
+const part2Time = performance.now() - start;
 
 console.log(`
-#1 
-   ${answer1}
+Part 1 
+   Answer: ${answer1}
+   Time Elapsed: ${msToTime(part1Time)}
 
-#2 
-   ${answer2}
+Part 2 
+   Answer: ${answer2}
+   Time Elapsed: ${msToTime(part2Time)}
 `);
