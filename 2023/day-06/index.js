@@ -8,23 +8,16 @@ import {
 
 function part1(input) {
   input = input.replace("Time: ", "").replace("Distance: ", "").trim();
-  var [times, distances] = input
+  var [times, records] = input
     .split("\n")
     .map((line) => line.split(" ").filter(Boolean).map(Number));
   let num = 1;
   times.forEach((time, index) => {
-    let distance = distances[index];
-    let traveled = 0,
-      speed = 0,
-      timesBeat = 0;
+    let timesBeat = 0;
     for (let i = 1; i < time; i++) {
-      speed = i;
-      traveled = (time - i) * speed;
-      if (traveled > distance) timesBeat++;
+      if ((time - i) * i > records[index]) timesBeat++;
     }
-    if (timesBeat > 0) {
-      num *= timesBeat;
-    }
+    num *= timesBeat;
   });
   return num;
 }
@@ -35,23 +28,16 @@ function part2(input) {
     .replace("Distance: ", "")
     .replaceAll(" ", "")
     .trim();
-  var [times, distances] = input
+  var [times, records] = input
     .split("\n")
     .map((line) => line.split(" ").filter(Boolean).map(Number));
   let num = 1;
   times.forEach((time, index) => {
-    let distance = distances[index];
-    let traveled = 0,
-      speed = 0,
-      timesBeat = 0;
+    let timesBeat = 0;
     for (let i = 1; i < time; i++) {
-      speed = i;
-      traveled = (time - i) * speed;
-      if (traveled > distance) timesBeat++;
+      if ((time - i) * i > records[index]) timesBeat++;
     }
-    if (timesBeat > 0) {
-      num *= timesBeat;
-    }
+    num *= timesBeat;
   });
   return num;
 }
