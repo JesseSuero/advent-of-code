@@ -20,7 +20,12 @@ function part1(input) {
         cards[card]++;
       }
     });
-    hands.push({ type: getType(cards), hand, cards, bid: parseInt(bid) });
+    hands.push({
+      type: getType(cards),
+      hand,
+      cards,
+      bid: parseInt(bid),
+    });
   });
 
   while (hands.length > 0) {
@@ -28,23 +33,8 @@ function part1(input) {
     for (let i = 1; i < hands.length; i++) {
       let currentCard = hands[i],
         highestCard = hands[highestCardIndex];
-      if (currentCard.type > highestCard.type) {
+      if (isHandGreater(highestCard, currentCard, order)) {
         highestCardIndex = i;
-      } else if (currentCard.type === highestCard.type) {
-        for (var j = 0; j < 5; j++) {
-          if (
-            order.indexOf(currentCard.hand[j]) !=
-            order.indexOf(highestCard.hand[j])
-          ) {
-            if (
-              order.indexOf(currentCard.hand[j]) <
-              order.indexOf(highestCard.hand[j])
-            ) {
-              highestCardIndex = i;
-            }
-            break;
-          }
-        }
       }
     }
     sum += hands[highestCardIndex].bid * hands.length;
@@ -52,25 +42,6 @@ function part1(input) {
   }
 
   return sum;
-}
-
-function getType(cards) {
-  var tripleFound = false,
-    doubleCount = 0;
-  for (const card in cards) {
-    var count = cards[card];
-    if (count === 5) return 7;
-    if (count === 4) return 6;
-    if (count === 3) {
-      tripleFound = true;
-    }
-    if (count == 2) doubleCount++;
-  }
-  if (tripleFound && doubleCount === 1) return 5;
-  if (tripleFound) return 4;
-  if (doubleCount === 2) return 3;
-  if (doubleCount === 1) return 2;
-  return 1;
 }
 
 function part2(input) {
@@ -88,7 +59,7 @@ function part2(input) {
       }
     });
     hands.push({
-      type: getTypeWithJokers(cards),
+      type: getType(cards, true),
       hand,
       cards,
       bid: parseInt(bid),
@@ -100,25 +71,11 @@ function part2(input) {
     for (let i = 1; i < hands.length; i++) {
       let currentCard = hands[i],
         highestCard = hands[highestCardIndex];
-      if (currentCard.type > highestCard.type) {
+      if (isHandGreater(highestCard, currentCard, order)) {
         highestCardIndex = i;
-      } else if (currentCard.type === highestCard.type) {
-        for (var j = 0; j < 5; j++) {
-          if (
-            order.indexOf(currentCard.hand[j]) !=
-            order.indexOf(highestCard.hand[j])
-          ) {
-            if (
-              order.indexOf(currentCard.hand[j]) <
-              order.indexOf(highestCard.hand[j])
-            ) {
-              highestCardIndex = i;
-            }
-            break;
-          }
-        }
       }
     }
+
     sum += hands[highestCardIndex].bid * hands.length;
     hands.splice(highestCardIndex, 1);
   }
@@ -126,9 +83,29 @@ function part2(input) {
   return sum;
 }
 
-function getTypeWithJokers(cards) {
+function isHandGreater(firstCard, secondCard, order) {
+  if (secondCard.type > firstCard.type) {
+    return true;
+  } else if (secondCard.type === firstCard.type) {
+    for (var j = 0; j < 5; j++) {
+      if (
+        order.indexOf(secondCard.hand[j]) != order.indexOf(firstCard.hand[j])
+      ) {
+        if (
+          order.indexOf(secondCard.hand[j]) < order.indexOf(firstCard.hand[j])
+        ) {
+          return true;
+        }
+        return false;
+      }
+    }
+  }
+  return false;
+}
+
+function getType(cards, jokersWild = false) {
   var jokerCount = 0;
-  if (cards["J"] != undefined) {
+  if (jokersWild && cards["J"] != undefined) {
     jokerCount = cards["J"];
   }
   var tripleFound = false,
@@ -140,7 +117,7 @@ function getTypeWithJokers(cards) {
     if (count === 3) {
       tripleFound = true;
     }
-    if (count == 2 && card != "J") doubleCount++;
+    if (count == 2 && (!jokersWild || card != "J")) doubleCount++;
   }
   if (
     (tripleFound && doubleCount === 1) ||
