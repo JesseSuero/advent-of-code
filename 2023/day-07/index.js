@@ -7,46 +7,17 @@ import {
 } from "../utils/index.js";
 
 function part1(input) {
-  let sum = 0;
   var order = ["A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"];
-  var hands = [];
-  input.split("\n").map((line) => {
-    var [hand, bid] = line.split(" ");
-    var cards = {};
-    hand.split("").forEach((card) => {
-      if (cards[card] === undefined) {
-        cards[card] = 1;
-      } else {
-        cards[card]++;
-      }
-    });
-    hands.push({
-      type: getType(cards),
-      hand,
-      cards,
-      bid: parseInt(bid),
-    });
-  });
-
-  while (hands.length > 0) {
-    var highestCardIndex = 0;
-    for (let i = 1; i < hands.length; i++) {
-      let currentCard = hands[i],
-        highestCard = hands[highestCardIndex];
-      if (isHandGreater(highestCard, currentCard, order)) {
-        highestCardIndex = i;
-      }
-    }
-    sum += hands[highestCardIndex].bid * hands.length;
-    hands.splice(highestCardIndex, 1);
-  }
-
-  return sum;
+  return getCamelWinnings(input, order);
 }
 
 function part2(input) {
-  let sum = 0;
   var order = ["A", "K", "Q", "T", "9", "8", "7", "6", "5", "4", "3", "2", "J"];
+  return getCamelWinnings(input, order, true);
+}
+
+function getCamelWinnings(input, order, jokersWild = false) {
+  let sum = 0;
   var hands = [];
   input.split("\n").map((line) => {
     var [hand, bid] = line.split(" ");
@@ -59,7 +30,7 @@ function part2(input) {
       }
     });
     hands.push({
-      type: getType(cards, true),
+      type: getType(cards, jokersWild),
       hand,
       cards,
       bid: parseInt(bid),
@@ -75,7 +46,6 @@ function part2(input) {
         highestCardIndex = i;
       }
     }
-
     sum += hands[highestCardIndex].bid * hands.length;
     hands.splice(highestCardIndex, 1);
   }
