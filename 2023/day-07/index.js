@@ -23,11 +23,8 @@ function getCamelWinnings(input, order, jokersWild = false) {
     var [hand, bid] = line.split(" ");
     var cards = {};
     hand.split("").forEach((card) => {
-      if (cards[card] === undefined) {
-        cards[card] = 1;
-      } else {
-        cards[card]++;
-      }
+      cards[card] ??= 0;
+      cards[card]++;
     });
     hands.push({
       type: getType(cards, jokersWild),
