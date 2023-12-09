@@ -11,16 +11,14 @@ export function getInput(moduleUrl) {
   });
 }
 
-export function getLCM(divisors) {
-  const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
-  let lcm = 1;
+// Usage: allEqual([1,2,3,4,5])
+export const allEqual = (arr) => arr.every((v) => v === arr[0]);
 
-  for (const divisor of divisors) {
-    lcm = (lcm * divisor) / gcd(lcm, divisor);
-  }
+// Usage: [1,2,3,4,5].reduce(gcd)
+export const gcd = (a, b) => (a ? gcd(b % a, a) : b);
 
-  return lcm;
-}
+// Usage: [1,2,3,4,5].reduce(lcm)
+export const lcm = (a, b) => (a * b) / gcd(a, b);
 
 export function formatBoard(input, buffer = false, emptyChar = ".") {
   const board = input

@@ -1,5 +1,12 @@
-import { getInput, formatBoard, lcm, Stack, msToTime } from "../utils/index.js";
-const allEqual = (arr) => arr.every((v) => v === arr[0]);
+import {
+  getInput,
+  formatBoard,
+  lcm,
+  Stack,
+  msToTime,
+  allEqual,
+} from "../utils/index.js";
+
 function part1(input) {
   let count = 0;
   input
