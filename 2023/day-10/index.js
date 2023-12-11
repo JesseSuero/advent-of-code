@@ -73,7 +73,7 @@ function part1(input) {
             board[x][y - 1] === "O" ||
             board[x][y + 1] === "O"
           ) {
-            // board[x][y] = "O";
+            board[x][y] = "O";
           }
       }
     }
