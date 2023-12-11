@@ -105,3 +105,14 @@ export function msToTime(elapsed) {
 
   return pad(hrs) + ":" + pad(mins) + ":" + pad(secs) + "." + pad(ms, 3);
 }
+
+export function print2dArray(arr) {
+  for (var x = 0; x < arr.length; x++) {
+    let arrText = "";
+    for (var y = 0; y < arr[x].length; y++) {
+      arrText += arr[x][y] + " ";
+    }
+    console.log(arrText);
+  }
+  console.log("\n\n\n");
+}
