@@ -51,16 +51,14 @@ function part1(input) {
   }
 
   for (let x = 0; x < galaxies.length; x++) {
-    for (let y = 0; y < galaxies.length; y++) {
-      if (x !== y) {
-        let distance =
-          Math.abs(galaxies[x].x - galaxies[y].x) +
-          Math.abs(galaxies[x].y - galaxies[y].y);
-        count += distance;
-      }
+    for (let y = x + 1; y < galaxies.length; y++) {
+      let distance =
+        Math.abs(galaxies[x].x - galaxies[y].x) +
+        Math.abs(galaxies[x].y - galaxies[y].y);
+      count += distance;
     }
   }
-  return count / 2;
+  return count;
 }
 
 function part2(input) {
@@ -101,37 +99,30 @@ function part2(input) {
   // print2dArray(board);
   const expansion = 999999;
   for (let x = 0; x < galaxies.length; x++) {
-    for (let y = 0; y < galaxies.length; y++) {
-      if (x !== y) {
-        let distance = 0;
-        const biggerX = Math.max(galaxies[x].x, galaxies[y].x),
-          smallerX = Math.min(galaxies[x].x, galaxies[y].x);
-        const biggerY = Math.max(galaxies[x].y, galaxies[y].y),
-          smallerY = Math.min(galaxies[x].y, galaxies[y].y);
-        let galaxyExtra = 0;
-        if (biggerX != smallerX) {
-          for (let i = smallerX; i < biggerX; i++) {
-            if (emptyRows.includes(i)) {
-              distance += expansion;
-            }
-          }
-        }
+    for (let y = x + 1; y < galaxies.length; y++) {
+      const biggerX = Math.max(galaxies[x].x, galaxies[y].x),
+        smallerX = Math.min(galaxies[x].x, galaxies[y].x);
+      const biggerY = Math.max(galaxies[x].y, galaxies[y].y),
+        smallerY = Math.min(galaxies[x].y, galaxies[y].y);
 
-        if (biggerY != smallerY) {
-          for (let i = smallerY; i < biggerY; i++) {
-            if (emptyColums.includes(i)) {
-              distance += expansion;
-            }
-          }
+      for (let i = smallerX; i < biggerX; i++) {
+        if (emptyRows.includes(i)) {
+          count += expansion;
         }
-        distance +=
-          Math.abs(galaxies[x].x - galaxies[y].x) +
-          Math.abs(galaxies[x].y - galaxies[y].y);
-        count += distance;
       }
+
+      for (let i = smallerY; i < biggerY; i++) {
+        if (emptyColums.includes(i)) {
+          count += expansion;
+        }
+      }
+
+      count +=
+        Math.abs(galaxies[x].x - galaxies[y].x) +
+        Math.abs(galaxies[x].y - galaxies[y].y);
     }
   }
-  return count / 2;
+  return count;
 }
 
 const input = getInput(import.meta.url);
