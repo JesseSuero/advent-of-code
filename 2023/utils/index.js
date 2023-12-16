@@ -133,22 +133,56 @@ export const Memoizer = (function () {
   //Private data
   var cache = {};
   //named functions are awesome!
-  function cacher(func) {
+  function cacher(func, getKey) {
     return function () {
-      var key = JSON.stringify(arguments);
-      if (cache[key]) {
+      var key = getKey.apply(this, arguments);
+      if (key in cache) {
         return cache[key];
       } else {
+        // console.log(Object.keys(cache).length + " " + key);
         var val = func.apply(this, arguments);
         cache[key] = val;
         return val;
       }
     };
   }
+
   //Public data
   return {
-    memo: function (func) {
-      return cacher(func);
+    memo: function (func, getKey) {
+      if (!getKey) {
+        getKey = function () {
+          //mini optimization... if only one argument, just return that argument as the key because stringify is slow
+          if (arguments.length === 1) {
+            return arguments[0];
+          } else {
+            // return JSON.stringify(arguments);
+            const char0 = String.fromCharCode(0);
+            let cacheKey = "";
+            for (const arg of arguments) {
+              const type = typeof arg;
+
+              cacheKey +=
+                char0 +
+                (arg === null
+                  ? "null"
+                  : arg === void 0
+                  ? "undefined"
+                  : type === "function"
+                  ? arg
+                  : type === "object" && arg.id
+                  ? arg.id
+                  : type === "object" && arg.hashCode
+                  ? arg.hashCode()
+                  : type === "object"
+                  ? JSON.stringify(arg)
+                  : arg);
+            }
+            return cacheKey;
+          }
+        };
+      }
+      return cacher(func, getKey);
     },
   };
 })();
