@@ -116,3 +116,44 @@ export function print2dArray(arr) {
   }
   console.log("\n\n\n");
 }
+
+export function factorial(num) {
+  if (num === 0 || num === 1) return 1;
+  for (var i = num - 1; i >= 1; i--) {
+    num *= i;
+  }
+  return num;
+}
+
+export function combination(n, r) {
+  return factorial(n) / (factorial(r) * factorial(n - r));
+}
+
+export const Memoizer = (function () {
+  //Private data
+  var cache = {};
+  //named functions are awesome!
+  function cacher(func) {
+    return function () {
+      var key = JSON.stringify(arguments);
+      if (cache[key]) {
+        return cache[key];
+      } else {
+        var val = func.apply(this, arguments);
+        cache[key] = val;
+        return val;
+      }
+    };
+  }
+  //Public data
+  return {
+    memo: function (func) {
+      return cacher(func);
+    },
+  };
+})();
+
+export const setCharAt = function (str, index, chr) {
+  if (index > str.length - 1 || index < 0) return str;
+  return str.substring(0, index) + chr + str.substring(index + 1);
+};
