@@ -10,13 +10,11 @@ import {
   setCharAt,
 } from "../utils/index.js";
 
-let globalCount = 0;
+const workflowList = {};
 
 function part1(input) {
   let count = 0;
-  const workflowList = {};
   let [workflows, ratings] = input.split("\n\n");
-
   workflows.split("\n").map((workflow) => {
     workflow = workflow.substring(0, workflow.length - 1);
     let [workflowName, conditions] = workflow.split("{");
@@ -45,13 +43,13 @@ function part1(input) {
       varValues[varName] = varValue;
     }
 
-    count += processWorkflow(workflowList, varValues);
+    count += processWorkflow(varValues);
   });
 
   return count;
 }
 
-function processWorkflow(workflowList, varValues, doSum = true) {
+function processWorkflow(varValues) {
   let nextWorkflow = "in";
 
   while (nextWorkflow !== "R" && nextWorkflow !== "A") {
@@ -78,62 +76,37 @@ function processWorkflow(workflowList, varValues, doSum = true) {
     return 0;
   } else {
     let sum = 0;
-    if (doSum) {
-      for (const varName in varValues) {
-        let varValue = parseInt(varValues[varName]);
-        sum += varValue;
-      }
-    } else {
-      return 1;
+    for (const varName in varValues) {
+      let varValue = parseInt(varValues[varName]);
+      sum += varValue;
     }
-
     return sum;
   }
 }
 
-function part2(input) {
-  let count = 0;
-  const workflowList = {};
-  let [workflows, ratings] = input.split("\n\n");
-
-  workflows.split("\n").map((workflow) => {
-    workflow = workflow.substring(0, workflow.length - 1);
-    let [workflowName, conditions] = workflow.split("{");
-    conditions = conditions.split(",").map((condition) => {
-      let [rule, nextWorkflow] = condition.split(":");
-      let [variable, value] = rule.split(/[<,>]+/);
-      let operator;
-      if (rule.includes("<")) {
-        operator = "<";
-      } else if (value) {
-        operator = ">";
-      }
-      return { variable, operator, value, nextWorkflow };
-    });
-    workflowList[workflowName] = conditions;
-  });
-
+function part2() {
   const variableRanges = {
     x: { min: 1, max: 4000 },
     m: { min: 1, max: 4000 },
     a: { min: 1, max: 4000 },
     s: { min: 1, max: 4000 },
   };
-  findMap(workflowList, "in", variableRanges);
-  return count;
+  return findMap("in", variableRanges);
 }
 
-function findMap(workflows, nextWorkflow, variableRanges) {
+function findMap(nextWorkflow, variableRanges) {
+  let count = 0;
   if (nextWorkflow === "R") {
-    return;
+    return 0;
   } else if (nextWorkflow === "A") {
-    globalCount +=
+    return (
       (variableRanges.x.max - variableRanges.x.min + 1) *
       (variableRanges.m.max - variableRanges.m.min + 1) *
       (variableRanges.a.max - variableRanges.a.min + 1) *
-      (variableRanges.s.max - variableRanges.s.min + 1);
+      (variableRanges.s.max - variableRanges.s.min + 1)
+    );
   } else {
-    const rules = workflows[nextWorkflow];
+    const rules = workflowList[nextWorkflow];
     for (let i = 0; i < rules.length; i++) {
       const rule = rules[i];
 
@@ -145,7 +118,7 @@ function findMap(workflows, nextWorkflow, variableRanges) {
           newVariableRanges[rule.variable].min <=
           newVariableRanges[rule.variable].max
         ) {
-          findMap(workflows, rule.nextWorkflow, newVariableRanges);
+          count += findMap(rule.nextWorkflow, newVariableRanges);
         }
       } else if (rule.operator === "<") {
         let newVariableRanges = structuredClone(variableRanges);
@@ -155,15 +128,16 @@ function findMap(workflows, nextWorkflow, variableRanges) {
           newVariableRanges[rule.variable].min <=
           newVariableRanges[rule.variable].max
         ) {
-          findMap(workflows, rule.nextWorkflow, newVariableRanges);
+          count += findMap(rule.nextWorkflow, newVariableRanges);
         }
       } else {
         let newVariableRanges = structuredClone(variableRanges);
         nextWorkflow = rule.variable;
-        findMap(workflows, rule.variable, newVariableRanges);
+        count += findMap(rule.variable, newVariableRanges);
       }
     }
   }
+  return count;
 }
 
 const input = getInput(import.meta.url);
@@ -180,6 +154,6 @@ Part 1
    Time Elapsed: ${msToTime(part1Time)}
 
 Part 2 
-   Answer: ${globalCount}
+   Answer: ${answer2}
    Time Elapsed: ${msToTime(part2Time)}
 `);
