@@ -191,3 +191,85 @@ export const setCharAt = function (str, index, chr) {
   if (index > str.length - 1 || index < 0) return str;
   return str.substring(0, index) + chr + str.substring(index + 1);
 };
+
+export function polygonArea(vertices, convertFrom2dArrayToGraph = false) {
+  var total = 0;
+  let pointOffset = 0;
+  for (var i = 0, l = vertices.length; i < l; i++) {
+    var addX = vertices[i].x;
+    let nextIndex = i == vertices.length - 1 ? 0 : i + 1;
+    var addY = vertices[nextIndex].y;
+    var subX = vertices[nextIndex].x;
+    var subY = vertices[i].y;
+
+    if (convertFrom2dArrayToGraph) {
+      pointOffset +=
+        (Math.abs(vertices[i].x - vertices[nextIndex].x) +
+          Math.abs(vertices[i].y - vertices[nextIndex].y)) *
+        0.5;
+    }
+
+    total += addX * addY * 0.5;
+    total -= subX * subY * 0.5;
+  }
+
+  if (convertFrom2dArrayToGraph) {
+    pointOffset++;
+  }
+
+  return Math.abs(total) + pointOffset;
+}
+
+export function polygonAreaFrom2DArray(vertices) {
+  return polygonArea(vertices, true);
+}
+
+export function polygonAreaFromGraphPoints(vertices) {
+  return polygonArea(vertices, false);
+}
+
+// function convert2DArrayToGraphPoints(vertices) {
+//   let topLeftEdge = { x: 0, y: 0 },
+//     topRightEdge = { x: 0, y: 1 },
+//     bottomLeftEdge = { x: 1, y: 0 },
+//     bottomRightEdge = { x: 1, y: 1 };
+//   let newPoints = [];
+//   for (let i = 0; i < vertices.length - 1; i++) {
+//     let vertix = vertices[i],
+//       nextVertix = vertices[i === vertices.length - 1 ? 0 : i + 1];
+//     let xDiff = nextVertix.x - vertix.x,
+//       yDiff = nextVertix.y - vertix.y;
+
+//     if (xDiff !== 0) {
+//       if (xDiff > 0) {
+//         //down
+//         newPoints.push(topLeftEdge);
+//         newPoints.push(topRightEdge);
+//       } else {
+//         //up
+//         newPoints.push(bottomLeftEdge);
+//         newPoints.push(bottomRightEdge);
+//       }
+//     } else if (yDiff !== 0) {
+//       if (yDiff > 0) {
+//         //right
+//         newPoints.push(bottomLeftEdge);
+//         newPoints.push(topLeftEdge);
+//       } else {
+//         //left
+//         newPoints.push(topRightEdge);
+//         newPoints.push(bottomRightEdge);
+//       }
+//     }
+
+//     topLeftEdge.x += xDiff;
+//     topLeftEdge.y += yDiff;
+//     topRightEdge.x += xDiff;
+//     topRightEdge.y += yDiff;
+//     bottomLeftEdge.x += xDiff;
+//     bottomLeftEdge.y += yDiff;
+//     bottomRightEdge.x += xDiff;
+//     bottomRightEdge.y += yDiff;
+//   }
+//   return newPoints;
+// }
