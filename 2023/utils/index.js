@@ -11,6 +11,13 @@ export function getInput(moduleUrl) {
   });
 }
 
+/**** increasing stack size for long recursion:
+
+  /bin/bash -c "ulimit -s 65500; exec /usr/local/bin/node --stack-size=65500 /path/folder/folder/index.js"     
+
+  Just changed the path to the correct one
+*/
+
 // Usage: allEqual([1,2,3,4,5])
 export const allEqual = (arr) => arr.every((v) => v === arr[0]);
 
@@ -19,6 +26,9 @@ export const gcd = (a, b) => (a ? gcd(b % a, a) : b);
 
 // Usage: [1,2,3,4,5].reduce(lcm)
 export const lcm = (a, b) => (a * b) / gcd(a, b);
+
+// Usage: mod(5, 10)
+export const mod = (n, m) => ((n % m) + m) % m;
 
 export function formatBoard(input, buffer = false, emptyChar = ".") {
   const board = input
